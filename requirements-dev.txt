@@ -17,3 +17,5 @@ datetime
 ta-lib
 pandas-ta
 python-dotenv==1.0.1
+black==24.10.0
+isort==5.13.2

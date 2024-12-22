@@ -1,21 +1,24 @@
-from alpaca.data.historical import StockHistoricalDataClient  
-from config import API_KEY, API_SECRET, FINANCIAL_PREP_API_KEY, POLYGON_API_KEY
-from pymongo import MongoClient
-from helper_files.client_helper import get_ndaq_tickers
-from config import MONGO_DB_USER, MONGO_DB_PASS
-from helper_files.client_helper import strategies, get_latest_price, dynamic_period_selector
-from strategies.talib_indicators import get_data, simulate_strategy
-import threading
+import os
 import random
-from config import mongo_url
+import threading
 import time
+
+from alpaca.data.historical import StockHistoricalDataClient
+from dotenv import load_dotenv
+from pymongo import MongoClient
+
+from config import MONGO_DB_USER, mongo_url
+from helper_files.client_helper import dynamic_period_selector, get_latest_price, get_ndaq_tickers, strategies
+from strategies.talib_indicators import get_data, simulate_strategy
+
+
 def test_strategies():
-   
-   # Initialize the StockHistoricalDataClient  
-   mongo_client = MongoClient() 
-   tickers = get_ndaq_tickers(mongo_url, FINANCIAL_PREP_API_KEY)
-   mongo_client.close()
-   """
+
+    # Initialize the StockHistoricalDataClient
+    mongo_client = MongoClient()
+    tickers = get_ndaq_tickers(mongo_url, os.environ.get("FINANCIAL_PREP_API_KEY"))
+    mongo_client.close()
+    """
    periods = ['1d', '5d','1mo', '3mo', '6mo', '1y', '2y', '5y', 'ytd', 'max']
    account_cash = 50000
    portfolio_qty = 10
@@ -35,13 +38,13 @@ def test_strategies():
             print(f"ERROR processing {ticker} for {strategy.__name__}: {e}")
       time.sleep(5)
    """
-   for ticker in tickers:
-      print(f"{ticker} : {dynamic_period_selector(ticker)}")
-   
-   
+    for ticker in tickers:
+        print(f"{ticker} : {dynamic_period_selector(ticker)}")
 
-if __name__ == "__main__":  
-   print(get_latest_price('VRTX'))
-   """
+
+if __name__ == "__main__":
+    load_dotenv("./.dev.env")
+    print(get_latest_price("VRTX"))
+    """
    test_strategies()
    """
